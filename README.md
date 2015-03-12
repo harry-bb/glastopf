@@ -15,6 +15,6 @@ The `supervisord.conf` is used to start glastopf under supervision of supervisor
 
 Using upstart, copy the `upstart/glastopf.conf` to `/etc/init/glastopf.conf` and start using
 
-    service start glastopf
+    service glastopf start
 
 This will make sure that the docker container is started with the appropriate rights and port mappings. Further, it autostarts during boot.
