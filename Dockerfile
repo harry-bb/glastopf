@@ -23,7 +23,7 @@ RUN echo "zend_extension = "$(find /usr -name bfr.so) >> /etc/php5/apache2/php.i
 RUN echo "zend_extension = "$(find /usr -name bfr.so) >> /etc/php5/cli/php.ini
 
 # Install glastopf from git
-RUN git clone https://github.com/glastopf/glastopf.git /opt/glastopf
+RUN git clone https://github.com/mushorg/glastopf.git /opt/glastopf
 RUN cd /opt/glastopf && python setup.py install
 
 # Setup user, groups and configs
