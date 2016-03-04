@@ -18,3 +18,8 @@ Using upstart, copy the `upstart/glastopf.conf` to `/etc/init/glastopf.conf` and
     service glastopf start
 
 This will make sure that the docker container is started with the appropriate rights and port mappings. Further, it autostarts during boot.
+
+# Glastopf Dashboard
+
+![Glastopf Dashboard](https://raw.githubusercontent.com/dtag-dev-sec/glastopf/master/doc/dashboard.png)
+

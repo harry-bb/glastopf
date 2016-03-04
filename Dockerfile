@@ -1,7 +1,7 @@
 # Glastopf Dockerfile by MO 
 #
-# VERSION 16.03.2
-FROM ubuntu:14.04.3
+# VERSION 16.03.3
+FROM ubuntu:14.04.4
 MAINTAINER MO 
 
 # Setup apt
@@ -43,5 +43,4 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set workdir and start glastopf
 WORKDIR /data/glastopf/
-CMD ["/usr/bin/supervisord"]
-
+CMD ["/usr/bin/supervisord","-c","/etc/supervisor/supervisord.conf"]
