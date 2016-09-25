@@ -1,8 +1,11 @@
 # Glastopf Dockerfile by MO 
 #
-# VERSION 16.03.3
+# VERSION 16.10
 FROM ubuntu:16.04 
 MAINTAINER MO 
+
+# Include dist
+ADD dist/ /root/dist/
 
 # Setup apt
 ENV DEBIAN_FRONTEND noninteractive
@@ -10,6 +13,7 @@ RUN sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted
     sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty-updates main restricted universe multiverse' /etc/apt/sources.list && \
     sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty-backports main restricted universe multiverse' /etc/apt/sources.list && \
     sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty-security main restricted universe multiverse' /etc/apt/sources.list && \
+
     apt-get update -y && \
     apt-get upgrade -y && \
 
@@ -78,11 +82,12 @@ RUN sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted
 # Clean up
     apt-get purge -y build-essential make git g++ php7.0 php7.0-dev && \
     apt-get autoremove -y && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 
 # Add configs
-ADD glastopf.cfg /opt/glastopf/
-ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+    mkdir -p /opt/glastopf && \
+    mv /root/dist/glastopf.cfg /opt/glastopf/ && \
+    mv /root/dist/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Set workdir and start glastopf
 WORKDIR /data/glastopf/
