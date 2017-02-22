@@ -46,7 +46,15 @@ RUN sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted
       python2.7-dev \
       supervisor \
       php7.0 \
-      php7.0-dev && \ 
+      php7.0-dev \ 
+
+# Setup ewsposter
+      python-mysqldb python-requests && \
+    git clone https://github.com/rep/hpfeeds.git /opt/hpfeeds && \
+    cd /opt/hpfeeds && \
+    python setup.py install && \
+    git clone https://github.com/vorband/ewsposter.git /opt/ewsposter && \
+    mkdir -p /opt/ewsposter/spool /opt/ewsposter/log && \
 
 # Install php sandbox from git
     git clone https://github.com/glastopf/BFR.git /opt/BFR && \
@@ -66,14 +74,6 @@ RUN sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted
     python setup.py install && \
     cd / && \
     rm -rf /opt/glastopf /tmp/* /var/tmp/* && \
-
-# Setup ewsposter
-    apt-get install -y python-mysqldb python-requests && \
-    git clone https://github.com/rep/hpfeeds.git /opt/hpfeeds && \
-    cd /opt/hpfeeds && \
-    python setup.py install && \
-    git clone https://github.com/armedpot/ewsposter.git /opt/ewsposter && \
-    mkdir -p /opt/ewsposter/spool /opt/ewsposter/log && \
 
 # Setup user
     addgroup --gid 2000 tpot && \
