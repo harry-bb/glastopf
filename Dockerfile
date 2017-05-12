@@ -1,64 +1,31 @@
-# Glastopf Dockerfile by MO 
-#
-# VERSION 17.06
-FROM ubuntu:16.04 
+FROM alpine 
 MAINTAINER MO 
 
 # Include dist
 ADD dist/ /root/dist/
 
-# Setup apt
-ENV DEBIAN_FRONTEND noninteractive
-RUN sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe multiverse' /etc/apt/sources.list && \
-    sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty-updates main restricted universe multiverse' /etc/apt/sources.list && \
-    sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty-backports main restricted universe multiverse' /etc/apt/sources.list && \
-    sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty-security main restricted universe multiverse' /etc/apt/sources.list && \
-
-    apt-get update -y && \
-    apt-get upgrade -y && \
-
-# Install packages 
-    apt-get install -y \
-      build-essential \
-      g++ \
-      gfortran \
-      git \
-      libevent-dev \
-      liblapack-dev \
-      libmysqlclient-dev \
-      libxml2-dev \
-      libxslt-dev \
-      make \
-      python-beautifulsoup \
-      python-chardet \
-      python-dev \
-      python-gevent \
-      python-lxml \
-      python-openssl \
-      python-pip \
-      python-requests \
-      python-setuptools \
-      python-sqlalchemy \
-      python-mysqldb \
-      cython \
-      python-dateutil \
-      python2.7 \
-      python2.7-dev \
-      supervisor \
-      php7.0 \
-      php7.0-dev && \ 
+# Install packages
+RUN apk -U upgrade && \
+    apk add autoconf bash build-base cython git libffi libffi-dev py-asn1 \
+            py-cffi py-chardet py-chardet py-cparser py-cryptography py-dateutil \
+            py-enum34 py-idna py-ipaddress py-jinja2 py-lxml py-mysqldb py-openssl \
+            py-pip py-requests py-setuptools python python-dev && \
+    apk -U add --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ \
+            py-beautifulsoup4 php7 php7-dev py-cssselect py-gevent py-greenlet py-mongo \
+            py-sqlalchemy py-webob && \
 
 # Install php sandbox from git
     git clone https://github.com/glastopf/BFR.git /opt/BFR && \
     cd /opt/BFR && \
-    phpize7.0 && \
-    ./configure --enable-bfr && \
+    phpize7 && \
+    ./configure \
+      --with-php-config=/usr/bin/php-config7 \
+      --enable-bfr && \
     make && \
     make install && \
-    make clean && \
     cd / && \
     rm -rf /opt/BFR /tmp/* /var/tmp/* && \
-    echo "zend_extension = "$(find /usr -name bfr.so) >> /etc/php/7.0/cli/php.ini && \
+    echo "zend_extension = "$(find /usr -name bfr.so) >> /etc/php7/php.ini && \
 
 # Install glastopf from git
     git clone https://github.com/mushorg/glastopf.git /opt/glastopf && \
@@ -68,18 +35,16 @@ RUN sed -i '1ideb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted
     rm -rf /opt/glastopf /tmp/* /var/tmp/* && \
 
 # Setup user, groups and configs
-    addgroup --gid 2000 tpot && \
-    adduser --system --no-create-home --shell /bin/bash --uid 2000 --disabled-password --disabled-login --gid 2000 tpot && \
+    addgroup -g 2000 glastopf && \
+    adduser -S -H -u 2000 -D -g 2000 glastopf && \
     mkdir -p /opt/glastopf && \
     mv /root/dist/glastopf.cfg /opt/glastopf/ && \
-    mv /root/dist/supervisord.conf /etc/supervisor/conf.d/supervisord.conf && \
 
 # Clean up
+    apk del build-base git libffi-dev php7-dev python-dev && \
     rm -rf /root/* && \
-    apt-get purge -y build-essential make git g++ php7.0 php7.0-dev && \
-    apt-get autoremove -y && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+    rm -rf /var/cache/apk/*
 
 # Set workdir and start glastopf
 WORKDIR /data/glastopf/
-CMD ["/usr/bin/supervisord","-c","/etc/supervisor/supervisord.conf"]
+CMD bash -c 'cp /opt/glastopf/glastopf.cfg /data/glastopf/ && exec glastopf-runner'
