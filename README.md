@@ -1,3 +1,5 @@
+[![](https://images.microbadger.com/badges/image/dtagdevsec/glastopf:1706.svg)](https://microbadger.com/images/dtagdevsec/glastopf:1706 "Get your own image badge on microbadger.com")
+
 # dockerized glastopf v3
 
 
