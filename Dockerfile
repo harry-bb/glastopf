@@ -6,7 +6,7 @@ ADD dist/ /root/dist/
 
 # Install packages
 RUN apk -U upgrade && \
-    apk add autoconf bash build-base cython git libffi libffi-dev py-asn1 \
+    apk add autoconf bash bind-tools build-base cython git libffi libffi-dev make py-asn1 \
             py-cffi py-chardet py-chardet py-cparser py-cryptography py-dateutil \
             py-enum34 py-idna py-ipaddress py-jinja2 py-lxml py-mysqldb py-openssl \
             py-pip py-requests py-setuptools python python-dev && \
@@ -41,7 +41,7 @@ RUN apk -U upgrade && \
     mv /root/dist/glastopf.cfg /opt/glastopf/ && \
 
 # Clean up
-    apk del build-base git libffi-dev php7-dev python-dev && \
+    apk del autoconf build-base git libffi-dev php7-dev python-dev && \
     rm -rf /root/* && \
     rm -rf /var/cache/apk/*
 
