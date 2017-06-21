@@ -46,5 +46,5 @@ RUN apk -U upgrade && \
     rm -rf /var/cache/apk/*
 
 # Set workdir and start glastopf
-WORKDIR /data/glastopf/
-CMD bash -c 'cp /opt/glastopf/glastopf.cfg /data/glastopf/ && exec glastopf-runner'
+WORKDIR /opt/glastopf/
+CMD ["glastopf-runner"]
